@@ -4,8 +4,16 @@ const request = require('supertest');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
+const todos = [{
+    text: 'First test todo'
+}, {
+    text: 'Second test todo'
+}];
+
 beforeEach((done) => {
-    Todo.remove({}).then(() => done());                             //removes all todos before every test
+    Todo.remove({}).then(() => {                        //removes all todos before every test
+        return Todo.insertMany(todos);
+    }).then(() => done());
 });
 
 describe('POST /todos', () => {
@@ -21,11 +29,11 @@ describe('POST /todos', () => {
             })
             .end((err, res) => {
                 if(err) {
-                    return done(err);                               // sstops function and passes occured error to done
+                    return done(err);                               // stops function and passes occured error to done
                 }
 
-                Todo.find().then((todos) => {                       //gets all todos
-                    expect(todos.length).toBe(1);                   //should bo 1 todo in db
+                Todo.find({text}).then((todos) => {                       //gets all todos with {text} value
+                    expect(todos.length).toBe(1);                   //should be 1 todo in db
                     expect(todos[0].text).toBe(text);               //expexts todo text value to be type text
                     done();
                 }).catch((e) => done(e));
@@ -44,9 +52,22 @@ describe('POST /todos', () => {
                 }
 
                 Todo.find().then((todos) => {                       //fetches all todos inside collection
-                    expect(todos.length).toBe(0);                   //expects 0 todos in db
+                    expect(todos.length).toBe(2);                   //expects 0 todos in db
                     done();
                 }).catch((e) => done(e));                           //catches error and passes it into done
-            })
+            });
     });
 });
+
+describe('GET /todos', () => {
+    it('should get all todos', (done) => {
+        request(app)
+            .get('/todos')
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todos.length).toBe(2);
+            })
+            .end(done);
+    });
+});
+

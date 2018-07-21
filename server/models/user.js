@@ -19,4 +19,4 @@ let User = mongoose.model('Users', {
 //     console.log('An error occured', e);
 // });
 //
-// module.exports = {User};
+module.exports = {User};
