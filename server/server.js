@@ -31,12 +31,12 @@ app.get('/todos', (req, res) => {
     });
 });
 
-app.get('/todos/:id', (req, res) => {                       // get todo by id
-    let id = req.params.id;
-    if(!ObjectID.isValid(id)) {
-        return res.status(404).send();
+app.get('/todos/:id', (req, res) => {                       // setting route for GET method
+    let id = req.params.id;                                 // variable id stores requested value (:id)
+    if(!ObjectID.isValid(id)) {                             // checks if passed value is not valid ID
+        return res.status(404).send();                      // if is not return 404 response
     }
-    Todo.findById(id).then((todo) => {
+    Todo.findById(id).then((todo) => {                      //
         if(!todo) {
             return res.status(404).send();
         }
