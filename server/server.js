@@ -8,6 +8,7 @@ const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 
 let app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());                             // takes json and converts it to an object
 
@@ -46,8 +47,8 @@ app.get('/todos/:id', (req, res) => {                       // setting route for
     });
 });
 
-app.listen(3000, () => {
-    console.log('Server started');
+app.listen(port, () => {
+    console.log(`Server started at port ${port}`);
 });
 
 
